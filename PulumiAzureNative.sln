@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulumiAzureNative.Demo1", "PulumiAzureNative.Demo1\PulumiAzureNative.Demo1.csproj", "{A4D11AA1-81E4-4437-961C-021BB877B810}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulumiAzureNative.Demo2", "PulumiAzureNative.Demo2\PulumiAzureNative.Demo2.csproj", "{30A5BE17-8828-43F9-ADEE-57B063B2766C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulumiAzureNative.Func", "PulumiAzureNative.Func\PulumiAzureNative.Func.csproj", "{C9676109-8E1B-4F47-883D-3D42CC981898}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A4D11AA1-81E4-4437-961C-021BB877B810}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4D11AA1-81E4-4437-961C-021BB877B810}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4D11AA1-81E4-4437-961C-021BB877B810}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4D11AA1-81E4-4437-961C-021BB877B810}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30A5BE17-8828-43F9-ADEE-57B063B2766C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30A5BE17-8828-43F9-ADEE-57B063B2766C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30A5BE17-8828-43F9-ADEE-57B063B2766C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30A5BE17-8828-43F9-ADEE-57B063B2766C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9676109-8E1B-4F47-883D-3D42CC981898}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9676109-8E1B-4F47-883D-3D42CC981898}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9676109-8E1B-4F47-883D-3D42CC981898}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9676109-8E1B-4F47-883D-3D42CC981898}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

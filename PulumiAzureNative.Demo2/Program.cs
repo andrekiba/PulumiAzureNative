@@ -1,7 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Pulumi;
 
-class Program
+namespace PulumiAzureNative.Demo2
 {
-    static Task<int> Main() => Deployment.RunAsync<MyStack>();
+    internal static class Program
+    {
+        static Task<int> Main() => Deployment.RunAsync<FunctionStack>();
+    }
 }
