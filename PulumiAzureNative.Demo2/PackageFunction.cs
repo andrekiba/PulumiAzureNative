@@ -27,12 +27,14 @@ namespace PulumiAzureNative.Demo2
         public PackageFunctionApp(string name, PackageFunctionAppArgs args, ComponentResourceOptions? options = null) : 
             base("PulumiAzureNative.Demo2.PackageFunctionApp", name, options)
         {
+            var resourceGroupName = args.ResourceGroup.Apply(rg => rg.Name);
+            
             #region Storage Account
             
             var storageAccountName = $"{args.ProjectName}{stackName}st{random.Next(1,1000)}";
-            var storageAccount = args.StorageAccount ?? new StorageAccount(storageAccountName, new StorageAccountArgs
+            Input<StorageAccount> storageAccount = args.StorageAccount ?? new StorageAccount(storageAccountName, new StorageAccountArgs
             {
-                ResourceGroupName = args.ResourceGroup.Name,
+                ResourceGroupName = resourceGroupName,
                 AccountName = storageAccountName,
                 Sku = new SkuArgs
                 {
@@ -47,15 +49,15 @@ namespace PulumiAzureNative.Demo2
             
             var container = new BlobContainer($"zips{random.Next(1,1000)}", new BlobContainerArgs
             {
-                AccountName = storageAccount.Name,
-                ResourceGroupName = args.ResourceGroup.Name,
+                AccountName = storageAccount.Apply(st => st.Name),
+                ResourceGroupName = resourceGroupName,
                 PublicAccess = PublicAccess.None
             });
             
             var blob = new Blob($"funczip{random.Next(1,1000)}", new BlobArgs
             {
-                AccountName = storageAccount.Name,
-                ResourceGroupName = args.ResourceGroup.Name,
+                AccountName = storageAccount.Apply(st => st.Name),
+                ResourceGroupName = resourceGroupName,
                 ContainerName = container.Name,
                 Type = BlobType.Block,
                 Source = args.Archive
@@ -70,7 +72,7 @@ namespace PulumiAzureNative.Demo2
             var planName = $"{args.ProjectName}-{stackName}-plan{random.Next(1,1000)}";
             var plan = args.Plan ?? new AppServicePlan(planName, new AppServicePlanArgs
             {
-                ResourceGroupName = args.ResourceGroup.Name,
+                ResourceGroupName = resourceGroupName,
                 Name = planName,
                 Kind = "Linux",
                 // Consumption plan SKU
@@ -89,11 +91,15 @@ namespace PulumiAzureNative.Demo2
             
             args.AppSettings.Add(new NameValuePairArgs{
                 Name = "AzureWebJobsStorage",
-                Value = GetStorageConnectionString(args.ResourceGroup.Name, storageAccount.Name)
+                Value = GetStorageConnectionString(resourceGroupName, storageAccount.Apply(st => st.Name))
             });
             args.AppSettings.Add(new NameValuePairArgs{
                 Name = "runtime",
                 Value = "dotnet"
+            });
+            args.AppSettings.Add(new NameValuePairArgs{
+                Name = "FUNCTIONS_EXTENSION_VERSION",
+                Value = "~3"
             });
             args.AppSettings.Add(new NameValuePairArgs{
                 Name = "WEBSITE_RUN_FROM_PACKAGE",
@@ -104,8 +110,8 @@ namespace PulumiAzureNative.Demo2
             {
                 Name = name,
                 Kind = "FunctionApp",
-                ResourceGroupName = args.ResourceGroup.Name,
-                ServerFarmId = plan.Id,
+                ResourceGroupName = resourceGroupName,
+                ServerFarmId = plan.Apply(p => p.Id),
                 SiteConfig = new SiteConfigArgs
                 {
                     AppSettings = args.AppSettings
@@ -138,9 +144,10 @@ namespace PulumiAzureNative.Demo2
                 return Output.Format($"DefaultEndpointsProtocol=https;AccountName={accountName};AccountKey={primaryStorageKey}");
             });
         }
-        static Output<string> SignedBlobReadUrl(Blob blob, BlobContainer container, StorageAccount account, ResourceGroup resourceGroup)
+        static Output<string> SignedBlobReadUrl(Blob blob, BlobContainer container, Input<StorageAccount> account, Input<ResourceGroup> resourceGroup)
         {
-            return Output.Tuple(blob.Name, container.Name, account.Name, resourceGroup.Name).Apply(t =>
+            return Output.Tuple(blob.Name, container.Name, account.Apply(a => a.Name), resourceGroup.Apply(rg => rg.Name))
+                .Apply(t =>
             {
                 (string blobName, string containerName, string accountName, string resourceGroupName) = t;
 
@@ -157,7 +164,7 @@ namespace PulumiAzureNative.Demo2
                     ContentType = "application/json",
                     CacheControl = "max-age=5",
                     ContentDisposition = "inline",
-                    ContentEncoding = "deflate",
+                    ContentEncoding = "deflate"
                 });
                 return Output.Format($"https://{accountName}.blob.core.windows.net/{containerName}/{blobName}?{blobSAS.Result.ServiceSasToken}");
             });
@@ -169,9 +176,9 @@ namespace PulumiAzureNative.Demo2
     public record PackageFunctionAppArgs
     {
         public string ProjectName { get; init; }
-        public ResourceGroup ResourceGroup { get; init; }
-        public StorageAccount? StorageAccount { get; init; }
-        public AppServicePlan? Plan { get; init; }
+        public Input<ResourceGroup> ResourceGroup { get; init; }
+        public Input<StorageAccount>? StorageAccount { get; init; }
+        public Input<AppServicePlan>? Plan { get; init; }
         public Input<AssetOrArchive> Archive { get; init; }
         public InputList<NameValuePairArgs> AppSettings { get; set; } = new();
     }
