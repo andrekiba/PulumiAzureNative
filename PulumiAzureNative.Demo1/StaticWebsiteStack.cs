@@ -11,15 +11,6 @@ namespace PulumiAzureNative.Demo1
 {
     internal class StaticWebsiteStack : Stack
     {
-        [Output("primaryStorageKey")]
-        public Output<string> PrimaryStorageKey { get; set; }
-        
-        [Output("staticEndpoint")]
-        public Output<string> StaticEndpoint { get; set; }
-        
-        [Output("cdnEndpoint")]
-        public Output<string> CdnEndpoint { get; set; }
-        
         public StaticWebsiteStack()
         {
             //var projectName = Deployment.Instance.ProjectName;
@@ -80,7 +71,7 @@ namespace PulumiAzureNative.Demo1
             #endregion
             
             #region CDN
-
+            /*
             var cdnProfileName = $"{projectName}-{stackName}-cdn-prof";
             var cdnProfile = new Cdn.Profile(cdnProfileName, new Cdn.ProfileArgs
             {
@@ -115,14 +106,33 @@ namespace PulumiAzureNative.Demo1
                 QueryStringCachingBehavior = Cdn.QueryStringCachingBehavior.NotSet,
                 ResourceGroupName = resourceGroup.Name
             });
-            
+            */
             #endregion 
+            
+            #region Output
             
             StaticEndpoint = storageAccount.PrimaryEndpoints.Apply(primaryEndpoints => primaryEndpoints.Web);
             PrimaryStorageKey = Output.Tuple(resourceGroup.Name, storageAccount.Name).Apply(names =>
                 Output.CreateSecret(GetStorageAccountPrimaryKey(names.Item1, names.Item2)));
-            CdnEndpoint = cdnEndpoint.HostName.Apply(hostName => $"https://{hostName}");
+            //CdnEndpoint = cdnEndpoint.HostName.Apply(hostName => $"https://{hostName}");
+            
+            #endregion
         }
+        
+        #region Output
+        
+        [Output("primaryStorageKey")]
+        public Output<string> PrimaryStorageKey { get; set; }
+        
+        [Output("staticEndpoint")]
+        public Output<string> StaticEndpoint { get; set; }
+        
+        [Output("cdnEndpoint")]
+        public Output<string> CdnEndpoint { get; set; }
+        
+        #endregion
+        
+        #region Methods
         
         static async Task<string> GetStorageAccountPrimaryKey(string resourceGroupName, string accountName)
         {
@@ -133,5 +143,7 @@ namespace PulumiAzureNative.Demo1
             });
             return accountKeys.Keys[0].Value;
         }
+        
+        #endregion
     }
 }
