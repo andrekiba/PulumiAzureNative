@@ -135,8 +135,8 @@ namespace PulumiAzureNative.Demo2
             */
             #endregion 
 
-            TestEndpoint = Output.Format($"https://{func.DefaultHostName}/api/Hello?name=GlobalAzureTorino");
-            //TestEndpoint1 = Output.Format($"https://{func1.FunctionApp.Apply(f => f.DefaultHostName)}/api/Hello?name=GlobalAzureTorino");
+            TestEndpoint = Output.Format($"https://{func.DefaultHostName}/api/Hello?name=PulumiDemo");
+            //TestEndpoint1 = Output.Format($"https://{func1.FunctionApp.Apply(f => f.DefaultHostName)}/api/Hello?name=PulumiDemo");
         }
         
         #region Methods
