@@ -128,7 +128,7 @@ namespace PulumiAzureNative.Demo1
         public Output<string> StaticEndpoint { get; set; }
         
         [Output("cdnEndpoint")]
-        public Output<string> CdnEndpoint { get; set; }
+        public Output<string>? CdnEndpoint { get; set; }
         
         #endregion
         
